@@ -4,7 +4,6 @@ import requests
 import snowflake.connector
 from urllib.error import URLError
 
-
 streamlit.title('My Parents New Healthy Diner')
 
 streamlit.header('Breakfast Menu')
@@ -46,7 +45,18 @@ try:
 except URLError as e:
    streamlit.error()
 
+streamlit.header("The fruit load list contains: ")
+# Snowflake-related functions
+def get_fruit_load_list():
+    with my_cnx_cursor() as my_cur:
+        my_cur.execute("select * from pc_rivery_db.public.fruit_load_list")
+        return my_cur.fetchall()
 
+# add a button to load the fruit
+if streamlit.button('Get Fruit Load List'):
+    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+    my_data_rows = my_cur.fetchall()
+    streamlit.dataframe(my_data_rows)
 
 #import requests
 #fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
@@ -61,7 +71,7 @@ except URLError as e:
 streamlit.stop()
 
 #import snowflake.connector
-
+# the following are old codes from the previous activity lessons:
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
 my_cur = my_cnx.cursor()
 #my_cur.execute("SELECT CURRENT_USER(), CURRENT_ACCOUNT(), CURRENT_REGION()")
